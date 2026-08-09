@@ -5,9 +5,7 @@ Spring Boot chat application backend with multi-AI model support, user authentic
 
 ## Frontend Repository
 
-The frontend repository for this project can be found at:
-
-**Frontend Repository:**https://github.com/MNGChen/MNGChat.git
+The **[frontend](https://github.com/MNGChen/MNGChat.git)** repository for this project can be found at:
 
 ## Tech Stack
 

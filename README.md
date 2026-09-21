@@ -38,18 +38,30 @@ The **[frontend](https://github.com/MNGChen/MNGChat.git)** repository for this p
 
 ## API Endpoints
 
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| POST | `/register` | Register user | No |
-| POST | `/login` | Login user | No |
-| POST | `/chat` | Send message | Yes |
-| GET | `/chat/sessions` | Session list | Yes |
-| POST | `/chat/session` | Create session | Yes |
-| GET | `/chat/models` | Model list | Yes |
-| GET | `/chat/history` | Chat history | Yes |
-| GET/POST/DELETE | `/chat/presets` | Preset management | Yes |
-| POST | `/chat/session/{id}/image` | Upload image | Yes |
-| GET | `/chat/admin/usage` | Usage stats | Yes |
+The server listens on `http://localhost:8080` by default. All protected endpoints require:
+
+```http
+Authorization: Bearer <token>
+```
+
+| Method | Path | Request | Response | Auth |
+|--------|------|---------|----------|------|
+| POST | `/register` | JSON: `username`, `email`, `password` | `{"token":"..."}` | No |
+| POST | `/login` | JSON: `email`, `password` | `{"token":"..."}` | No |
+| POST | `/chat` | JSON: `sessionId`, `message`, optional `model`, `systemPrompt`, `temperature` | Reply, selected model, and token counts | Yes |
+| GET | `/chat/sessions` | — | User's sessions, newest first | Yes |
+| POST | `/chat/session` | — | Newly created session | Yes |
+| PATCH | `/chat/session/{sessionId}/title` | JSON: `title` | `200 OK` | Yes |
+| DELETE | `/chat/session/{sessionId}` | — | `204 No Content` | Yes |
+| GET | `/chat/models` | — | Available model names | Yes |
+| GET | `/chat/history?sessionId={sessionId}` | — | Messages in the session | Yes |
+| GET | `/chat/presets` | — | User's saved presets | Yes |
+| POST | `/chat/presets` | JSON: `name`, optional `systemPrompt`, `temperature` | Created preset (`201 Created`) | Yes |
+| DELETE | `/chat/presets/{presetId}` | — | `204 No Content` | Yes |
+| POST | `/chat/session/{sessionId}/image` | `multipart/form-data`, field: `file` (image only; max 10 MB) | Uploaded image message | Yes |
+| GET | `/chat/admin/usage` | — | Account, request, token, and per-user usage | `CHAT_ADMIN_EMAILS` only |
+
+`GET /chat/models` currently returns `gpt-5.4` and `gpt-5.4-mini`; omit `model` to use `gpt-5.4`. Set `CHAT_ADMIN_EMAILS` to a comma-separated allowlist to use the usage endpoint.
 
 ## Project Structure
 
